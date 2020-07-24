@@ -30,6 +30,9 @@ public class LoginController {
 	 
 	 @Autowired
 	 private EurekaClient eurekaClient;
+	 
+	 @Autowired
+	 private UserFeignProxy userFeignProxy;
 	
 	
 	
@@ -64,17 +67,17 @@ public class LoginController {
 	@RequestMapping(value="/dologin")
 	public String validateUser(Model model,@RequestParam("username") String username,@RequestParam("password") String password) {
 		
-		
+		/*
 		 Application application = eurekaClient.getApplication("zuulserver");
 	     InstanceInfo instanceInfo = application.getInstances().get(0);
 	     String url = "http://" + instanceInfo.getIPAddr() + ":" + instanceInfo.getPort() + "/admin/validateUser?username="+username+"&password="+password;
 		
-		
+		*/
 		System.out.println("Login Page");
 		
 		// code 
 		
-		UserDto userDto = restTemplate.getForObject(url, UserDto.class);//  loginService.validateUser(username,password);
+		UserDto userDto = userFeignProxy.validateUser(username, password);// restTemplate.getForObject(url, UserDto.class);//  loginService.validateUser(username,password);
 		
 		
 		
@@ -88,9 +91,9 @@ public class LoginController {
 			UserDto userformData = new UserDto();
 			
 			
-			 url = "http://" + instanceInfo.getIPAddr() + ":" + instanceInfo.getPort() + "/admin/findAllUsers";
+			// url = "http://" + instanceInfo.getIPAddr() + ":" + instanceInfo.getPort() + "/admin/findAllUsers";
 			
-			List<UserDto> users = restTemplate.getForObject(url,List.class); //loginService.getAllUsers();
+			List<UserDto> users = userFeignProxy.getAllUsers();//restTemplate.getForObject(url,List.class); //loginService.getAllUsers();
 			
 			
 			model.addAttribute("users",users);
